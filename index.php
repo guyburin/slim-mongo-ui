@@ -20,7 +20,7 @@
     </nav>
     <br/>
     <div class="container">
-      <button type="button" class="btn btn-info">create student</button>
+      <a href="insert.php"><button type="button" class="btn btn-info">create student</button></a>
       <table class="table table-bordered">
           <thead>
             <tr>
@@ -45,25 +45,18 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script>
-      $(document).ready(function () {
-
-        search();
-
-        function search(data){
-          $.post("http://localhost/slimmongo/search", data,
+      function deleteStudent(id){
+        if (confirm("คุณต้องการลบหรือไม่")) {
+          $.get("http://localhost/slimmongo/delete/"+id, {},
             function (data, textStatus, jqXHR) {
-              renderTable(data);
+              search();
             }
           );
+
         }
+      }
 
-        $("#form").submit(function (e) { 
-          e.preventDefault();
-          var data = $(this).serialize();
-          search(data);
-        });
-
-        function renderTable(data){
+      function renderTable(data){
           var profile = $("#profile");
           profile.empty();
 
@@ -77,11 +70,29 @@
               + '<td>'+value.education[0]+'</td>'
               + '<td>'+value.education[1]+'</td>'
               + '<td>'+value.education[2]+'</td>'
-              + '<td><a href="edit.php?id='+value.id+'"><button class="btn btn-warning">edit</button></a> <button class="btn btn-danger">delete</button></td>'
+              + '<td><a href="edit.php?id='+value.id+'"><button class="btn btn-warning">edit</button></a>' 
+              + '<button class="btn btn-danger" onclick="deleteStudent(\''+value.id+'\')">delete</button></td>'
             + '</tr>')
           });
 
         }
+
+        function search(data){
+          $.post("http://localhost/slimmongo/search", data,
+            function (data, textStatus, jqXHR) {
+              renderTable(data);
+            }
+          );
+        }
+      $(document).ready(function () {
+
+        search();
+
+        $("#form").submit(function (e) { 
+          e.preventDefault();
+          var data = $(this).serialize();
+          search(data);
+        });
 
       });
     </script>
